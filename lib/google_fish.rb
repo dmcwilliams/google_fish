@@ -8,13 +8,14 @@ class GoogleFish
 
   def translate(source, target, q, options={})
     @format = :html if options[:html]
-    # Break up the content string by sentences if the content string is larger than 500 characters
+    # Break up the content string by sentences ending in (.) if the content string is larger than 500 characters
     @source, @target, @q = source, target, q
     if q.size > 500
       @translated_text = String.new
-      q.split(/\. |\? |\! /).each do |sentence|
+      q.split(/\. /).each do |sentence|
         @source, @target, @q = source, target, sentence
-        @translated_text = @translated_text + request_translation
+        translated_text = request_translation
+        @translated_text << "#{translated_text}. " unless translated_text.blank?
       end
     else
       @source, @target, @q = source, target, q
